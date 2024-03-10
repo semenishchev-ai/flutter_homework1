@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/news_model.dart';
-import '../utils/theme_notifier.dart';
+import '../utils/notifiers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticlePage extends StatelessWidget {
   final NewsModel article;
+  final String _defaultImageUrl = 'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
 
   const ArticlePage({super.key, required this.article});
 
@@ -21,9 +23,15 @@ class ArticlePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('News Details'),
+        title: Text(AppLocalizations.of(context)!.article),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              localeNotifier.value = (localeNotifier.value.languageCode == 'en' ? const Locale('ru') : const Locale('en'));
+            },
+            icon: const Icon(Icons.language),
+          ),
           IconButton(
             onPressed: () {
               themeNotifier.value = !themeNotifier.value;
@@ -43,9 +51,10 @@ class ArticlePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (article.urlToImage != '')
               Image.network(
-                article.urlToImage,
+                article.urlToImage != ''
+                    ? article.urlToImage
+                    : _defaultImageUrl,
                 fit: BoxFit.cover,
               ),
             Padding(
@@ -53,33 +62,33 @@ class ArticlePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     article.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     'Author: ${article.author}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     article.content,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18.0,
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   InkWell(
                     onTap: _launchURL,
-                    child: Text(
+                    child: const Text(
                       'Read more',
                       style: TextStyle(
                         color: Colors.blue,

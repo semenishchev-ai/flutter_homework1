@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:homework1/api/news_data.dart';
 import 'package:homework1/models/news_model.dart';
 import 'package:homework1/screens/article_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../utils/theme_notifier.dart';
+import '../utils/notifiers.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +15,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isFetched = false;
+  // int _count = 5;
+
+  final ScrollController _scrollController = ScrollController();
   final String _defaultImageUrl =
       'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
   List<NewsModel> newsList = [];
@@ -21,8 +25,24 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // _scrollController.addListener(_loadMoreData);
     fetchNews();
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // void _loadMoreData() {
+  //   if (_scrollController.position.pixels ==
+  //       _scrollController.position.maxScrollExtent) {
+  //     setState(() {
+  //       _count += 5;
+  //     });
+  //   }
+  // }
 
   Future<void> fetchNews() async {
     setState(() {
@@ -38,9 +58,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('News Topics'),
+        title: Text(AppLocalizations.of(context)!.name),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              localeNotifier.value = (localeNotifier.value.languageCode == 'en' ? const Locale('ru') : const Locale('en'));
+            },
+            icon: const Icon(Icons.language),
+          ),
           IconButton(
             onPressed: () {
               themeNotifier.value = !themeNotifier.value;
@@ -58,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _isFetched
           ? ListView.builder(
+              controller: _scrollController,
               itemCount: newsList.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
