@@ -12,4 +12,4 @@ This Flutter News App is a mobile application that allows users to read news art
 
 ## Screenshots
 
-- TODO
+- /screenshots

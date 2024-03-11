@@ -13,9 +13,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+  class _HomePageState extends State<HomePage> {
   bool _isFetched = false;
-  // int _count = 5;
 
   final ScrollController _scrollController = ScrollController();
   final String _defaultImageUrl =
@@ -25,24 +24,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // _scrollController.addListener(_loadMoreData);
     fetchNews();
   }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  // void _loadMoreData() {
-  //   if (_scrollController.position.pixels ==
-  //       _scrollController.position.maxScrollExtent) {
-  //     setState(() {
-  //       _count += 5;
-  //     });
-  //   }
-  // }
 
   Future<void> fetchNews() async {
     setState(() {
@@ -63,7 +46,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              localeNotifier.value = (localeNotifier.value.languageCode == 'en' ? const Locale('ru') : const Locale('en'));
+              localeNotifier.value = (localeNotifier.value.languageCode == 'en'
+                  ? const Locale('ru')
+                  : const Locale('en'));
             },
             icon: const Icon(Icons.language),
           ),

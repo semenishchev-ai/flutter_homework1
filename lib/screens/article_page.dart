@@ -6,7 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticlePage extends StatelessWidget {
   final NewsModel article;
-  final String _defaultImageUrl = 'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
+  final String _defaultImageUrl =
+      'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
 
   const ArticlePage({super.key, required this.article});
 
@@ -28,7 +29,9 @@ class ArticlePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              localeNotifier.value = (localeNotifier.value.languageCode == 'en' ? const Locale('ru') : const Locale('en'));
+              localeNotifier.value = (localeNotifier.value.languageCode == 'en'
+                  ? const Locale('ru')
+                  : const Locale('en'));
             },
             icon: const Icon(Icons.language),
           ),
@@ -51,12 +54,10 @@ class ArticlePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-              Image.network(
-                article.urlToImage != ''
-                    ? article.urlToImage
-                    : _defaultImageUrl,
-                fit: BoxFit.cover,
-              ),
+            Image.network(
+              article.urlToImage != '' ? article.urlToImage : _defaultImageUrl,
+              fit: BoxFit.cover,
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
