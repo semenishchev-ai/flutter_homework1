@@ -12,7 +12,7 @@ This Flutter News App is a mobile application that allows users to read news art
 
 ## Screenshots
 
-- ![Screenshot 1](/screenshots/screenshot_1.jpg)
+- <img src="/screenshots/screenshot_1.jpg" alt="Screenshot 1" width="30%">
 - More screenshots can be found in /screenshots
 
 ## APK
