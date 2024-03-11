@@ -7,9 +7,16 @@ This Flutter News App is a mobile application that allows users to read news art
 - Scrollable main screen with news images and description.
 - View detailed information about each news article.
 - Click on the "Read more" to view the full article in a web browser.
-- Switch theme by clicking on the icon.
+- Switch between light and dark themes.
 - Switch locale by clicking on the icon.
 
 ## Screenshots
 
-- /screenshots
+- ![Screenshot 1](/screenshots/screenshot1.png)
+- More screenshots can be found in /screenshots
+
+## APK
+
+- Latest release version of apk:
+- [Flutter News App APK](/apk/app-release.apk)
+- The same APK file can be made by running `flutter build apk`
