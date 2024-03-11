@@ -12,11 +12,10 @@ This Flutter News App is a mobile application that allows users to read news art
 
 ## Screenshots
 
-- ![Screenshot 1](/screenshots/screenshot1.png)
+- ![Screenshot 1](/screenshots/screenshot_1.png)
 - More screenshots can be found in /screenshots
 
 ## APK
 
-- Latest release version of apk:
-- [Flutter News App APK](/apk/app-release.apk)
+- Latest release version of apk: [Flutter News App APK](/apk/app-release.apk)
 - The same APK file can be made by running `flutter build apk`
