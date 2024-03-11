@@ -1,16 +1,15 @@
-# homework1
+# Flutter News App
 
-Flutter homework, news app
+This Flutter News App is a mobile application that allows users to read news articles. It fetches news data from a remote API (NewsApi) and displays it.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Scrollable main screen with news images and description.
+- View detailed information about each news article.
+- Click on the "Read more" to view the full article in a web browser.
+- Switch theme by clicking on the icon.
+- Switch locale by clicking on the icon.
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- TODO
