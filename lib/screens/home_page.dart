@@ -5,35 +5,36 @@ import 'package:homework1/screens/article_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../utils/notifiers.dart';
+import 'liked_news_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-  class _HomePageState extends State<HomePage> {
-  bool _isFetched = false;
-
-  final ScrollController _scrollController = ScrollController();
+class _HomePageState extends State<HomePage> {
+  late List<NewsModel> _newsList = [];
   final String _defaultImageUrl =
       'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
-  List<NewsModel> newsList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchNews();
+    _fetchNews();
   }
 
-  Future<void> fetchNews() async {
+  Future<void> _fetchNews() async {
+    final news = await NewsData().fetchNews();
     setState(() {
-      _isFetched = false;
+      _newsList = news;
     });
-    newsList = await NewsData().fetchNews();
+  }
+
+  void _toggleLikeStatus(NewsModel article) {
     setState(() {
-      _isFetched = true;
+      article.isLiked = !article.isLiked;
     });
   }
 
@@ -65,20 +66,33 @@ class HomePage extends StatefulWidget {
               },
             ),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LikedNewsPage(
+                      likedNews:
+                          _newsList.where((news) => news.isLiked).toList()),
+                ),
+              );
+            },
+            icon: const Icon(Icons.favorite),
+          ),
         ],
       ),
-      body: _isFetched
-          ? ListView.builder(
-              controller: _scrollController,
-              itemCount: newsList.length,
+      body: _newsList.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: _newsList.length,
               itemBuilder: (BuildContext context, int index) {
+                final news = _newsList[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            ArticlePage(article: newsList[index]),
+                        builder: (context) => ArticlePage(article: news),
                       ),
                     );
                   },
@@ -94,17 +108,18 @@ class HomePage extends StatefulWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.network(
-                              newsList[index].urlToImage != ''
-                                  ? newsList[index].urlToImage
-                                  : _defaultImageUrl,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )),
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.network(
+                            news.urlToImage.isNotEmpty
+                                ? news.urlToImage
+                                : _defaultImageUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         const SizedBox(height: 10.0),
                         Text(
-                          newsList[index].title,
+                          news.title,
                           style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
@@ -112,19 +127,23 @@ class HomePage extends StatefulWidget {
                         ),
                         const SizedBox(height: 5.0),
                         Text(
-                          newsList[index].description,
+                          news.description,
                           style: const TextStyle(
                             fontSize: 14.0,
                           ),
+                        ),
+                        IconButton(
+                          onPressed: () => _toggleLikeStatus(_newsList[index]),
+                          icon: Icon(news.isLiked
+                              ? Icons.favorite
+                              : Icons.favorite_border),
+                          color: news.isLiked ? Colors.red : null,
                         ),
                       ],
                     ),
                   ),
                 );
               },
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
             ),
     );
   }

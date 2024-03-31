@@ -18,6 +18,7 @@ class NewsData {
                 url: item['url'] ?? '',
                 urlToImage: item['urlToImage'] ?? '',
                 content: item['content'] ?? '',
+                isLiked: false,
               ))
           .toList();
     } else {
