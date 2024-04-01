@@ -1,19 +1,26 @@
+
 # Flutter News App
 
 This Flutter News App is a mobile application that allows users to read news articles. It fetches news data from a remote API (NewsApi) and displays it.
 
 ## Features
-
+*Version 1*
 - Scrollable main screen with news images and description.
 - View detailed information about each news article.
 - Click on the "Read more" to view the full article in a web browser.
 - Switch between light and dark themes.
 - Switch locale by clicking on the icon.
+------
+*Version 2*
+- Like button for favourite news
+- Separate screen with liked news
+- Riverpod for DI and state management
+- Some simple tests
 
 ## Screenshots
 
-- <img src="/screenshots/screenshot_1.jpg" alt="Screenshot 1" width="30%">
-- More screenshots can be found in /screenshots
+- <img src="/screenshots/screenshot_1.jpg" alt="Screenshot 1" width="30%">  
+- More screenshots can be found in /screenshots (version 2 screenshots have "v2" tag)
 
 ## APK
 

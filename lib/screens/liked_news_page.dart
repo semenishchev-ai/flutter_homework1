@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homework1/screens/article_page.dart';
 import 'package:homework1/utils/like_toggle.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:homework1/utils/riverpod_providers.dart';
 
 class LikedNewsPage extends ConsumerStatefulWidget {
@@ -22,13 +23,32 @@ class _LikedNewsPageState extends ConsumerState<LikedNewsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLightTheme = ref.watch(themeProvider);
+    final String locale = ref.watch(localeProvider);
     final likedNews = ref.watch(likedNewsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liked News'),
-        centerTitle: true,
-      ),
+          title: Text(AppLocalizations.of(context)!.fav),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                ref.read(localeProvider.notifier).state =
+                    locale == 'en' ? 'ru' : 'en';
+              },
+              icon: const Icon(Icons.language),
+            ),
+            IconButton(
+              onPressed: () {
+                ref.read(themeProvider.notifier).state =
+                    !ref.read(themeProvider);
+              },
+              icon: Icon(
+                isLightTheme ? Icons.light_mode : Icons.dark_mode,
+              ),
+            ),
+          ]),
       body: likedNews.isEmpty
           ? const Center(child: Text('No liked news.'))
           : ListView.builder(
