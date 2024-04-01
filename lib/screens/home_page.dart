@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:homework1/api/news_data.dart';
-import 'package:homework1/models/news_model.dart';
 import 'package:homework1/screens/article_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../utils/notifiers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homework1/utils/like_toggle.dart';
+import '../utils/riverpod_providers.dart';
 import 'liked_news_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late List<NewsModel> _newsList = [];
+class _HomePageState extends ConsumerState<HomePage> {
   final String _defaultImageUrl =
       'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
 
@@ -28,18 +27,16 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchNews() async {
     final news = await NewsData().fetchNews();
     setState(() {
-      _newsList = news;
-    });
-  }
-
-  void _toggleLikeStatus(NewsModel article) {
-    setState(() {
-      article.isLiked = !article.isLiked;
+      ref.read(newsProvider.notifier).state = news;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isLightTheme = ref.watch(themeProvider);
+    final String locale = ref.watch(localeProvider);
+    final newsList = ref.watch(newsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.name),
@@ -47,54 +44,52 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              localeNotifier.value = (localeNotifier.value.languageCode == 'en'
-                  ? const Locale('ru')
-                  : const Locale('en'));
+              ref.read(localeProvider.notifier).state =
+                  locale == 'en' ? 'ru' : 'en';
             },
             icon: const Icon(Icons.language),
           ),
           IconButton(
             onPressed: () {
-              themeNotifier.value = !themeNotifier.value;
+              ref.read(themeProvider.notifier).state = !ref.read(themeProvider);
             },
-            icon: ValueListenableBuilder<bool>(
-              valueListenable: themeNotifier,
-              builder: (context, isLightTheme, _) {
-                return Icon(
-                  isLightTheme ? Icons.light_mode : Icons.dark_mode,
-                );
-              },
+            icon: Icon(
+              isLightTheme ? Icons.light_mode : Icons.dark_mode,
             ),
           ),
           IconButton(
             onPressed: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LikedNewsPage(
-                      likedNews:
-                          _newsList.where((news) => news.isLiked).toList()),
-                ),
-              );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LikedNewsPage(),
+                  )).then((value) {
+                setState(() {});
+              });
             },
             icon: const Icon(Icons.favorite),
           ),
         ],
       ),
-      body: _newsList.isEmpty
+      body: newsList.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: _newsList.length,
+              itemCount: newsList.length,
               itemBuilder: (BuildContext context, int index) {
-                final news = _newsList[index];
+                final news = newsList[index];
                 return GestureDetector(
                   onTap: () {
+                    // setState(() {
+                    //   ref.read(viewedArticleProvider.notifier).state = news;
+                    // });
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ArticlePage(article: news),
                       ),
-                    );
+                    ).then((value) {
+                      setState(() {});
+                    });
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
@@ -133,7 +128,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () => _toggleLikeStatus(_newsList[index]),
+                          onPressed: () => {
+                            setState(() {
+                              toggleLikeStatus(
+                                  ref.read(likedNewsProvider.notifier).state,
+                                  newsList[index]);
+                            })
+                          },
                           icon: Icon(news.isLiked
                               ? Icons.favorite
                               : Icons.favorite_border),

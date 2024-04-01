@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:homework1/models/news_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homework1/screens/article_page.dart';
+import 'package:homework1/utils/like_toggle.dart';
+import 'package:homework1/utils/riverpod_providers.dart';
 
-class LikedNewsPage extends StatelessWidget {
-  final List<NewsModel> likedNews;
+class LikedNewsPage extends ConsumerStatefulWidget {
+  const LikedNewsPage({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _LikedNewsPageState();
+}
+
+class _LikedNewsPageState extends ConsumerState<LikedNewsPage> {
   final String _defaultImageUrl =
       'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
 
-  const LikedNewsPage({Key? key, required this.likedNews}) : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final likedNews = ref.watch(likedNewsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liked News'),
@@ -39,30 +52,32 @@ class LikedNewsPage extends StatelessWidget {
                     title: Text(
                       news.title,
                       maxLines: 2,
-                      overflow: TextOverflow.ellipsis, // Add ellipsis
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    trailing: StatefulBuilder(
-                      builder: (context, setState) {
-                        return IconButton(
-                          icon: Icon(news.isLiked
-                              ? Icons.favorite
-                              : Icons.favorite_border),
-                          onPressed: () {
-                            setState(() {
-                              news.isLiked = !news.isLiked;
-                            });
-                          },
-                          color: news.isLiked ? Colors.red : null,
-                        );
+                    trailing: IconButton(
+                      icon: Icon(news.isLiked
+                          ? Icons.favorite
+                          : Icons.favorite_border),
+                      onPressed: () {
+                        setState(() {
+                          toggleLikeStatus(
+                              ref.read(likedNewsProvider.notifier).state, news);
+                        });
                       },
+                      color: news.isLiked ? Colors.red : null,
                     ),
                     onTap: () {
+                      // setState(() {
+                      //   ref.read(viewedArticleProvider.notifier).state = news;
+                      // });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ArticlePage(article: news),
                         ),
-                      );
+                      ).then((value) {
+                        setState(() {});
+                      });
                     },
                   ),
                 );

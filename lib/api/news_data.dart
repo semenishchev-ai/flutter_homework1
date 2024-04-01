@@ -4,7 +4,7 @@ import '../models/news_model.dart';
 
 class NewsData {
   static String apiUrl =
-      'https://newsapi.org/v2/everything?q=apple&from=2024-03-09&to=2024-03-09&sortBy=popularity&apiKey=139bc32f7ef14f6eba78854d738dddfb';
+      'https://newsapi.org/v2/everything?q=apple&from=2024-03-31&to=2024-04-01&sortBy=popularity&apiKey=139bc32f7ef14f6eba78854d738dddfb';
 
   Future<List<NewsModel>> fetchNews() async {
     final response = await http.get(Uri.parse(apiUrl));
