@@ -16,9 +16,33 @@ class ArticlePage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ArticlePageState();
 }
 
-class _ArticlePageState extends ConsumerState<ArticlePage> {
+class _ArticlePageState extends ConsumerState<ArticlePage>
+    with SingleTickerProviderStateMixin {
   final String _defaultImageUrl =
       'https://www.servicedriventransport.com/wp-content/uploads/2023/06/News.jpg';
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_controller);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,76 +83,94 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.network(
-              widget.article.urlToImage != ''
-                  ? widget.article.urlToImage
-                  : _defaultImageUrl,
-              fit: BoxFit.cover,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10.0),
-                  IconButton(
-                    icon: Icon(widget.article.isLiked
-                        ? Icons.favorite
-                        : Icons.favorite_border),
-                    onPressed: () {
-                      setState(() {
-                        toggleLikeStatus(
-                            ref.read(likedNewsProvider.notifier).state,
-                            widget.article);
-                      });
-                    },
-                    color: widget.article.isLiked ? Colors.red : null,
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    widget.article.title,
-                    style: const TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+      body: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: _animation.value,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Image.network(
+                      widget.article.urlToImage != ''
+                          ? widget.article.urlToImage
+                          : _defaultImageUrl,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    'Author: ${widget.article.author}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    widget.article.content,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  InkWell(
-                    onTap: () => launchURL(widget.article.url),
-                    child: const Text(
-                      'Read more',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline,
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10.0),
+                          GestureDetector(
+                            onTap: () => {
+                              setState(() {
+                                toggleLikeStatus(
+                                    ref.read(likedNewsProvider.notifier).state,
+                                    widget.article);
+                              })
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              padding: EdgeInsets.all(widget.article.isLiked ? 8.0 : 4.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: widget.article.isLiked ? Colors.red : null,
+                              ),
+                              child: Icon(
+                                widget.article.isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: widget.article.isLiked ? Colors.white : null,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            widget.article.title,
+                            style: const TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            'Author: ${widget.article.author}',
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            widget.article.content,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          InkWell(
+                            onTap: () => launchURL(widget.article.url),
+                            child: const Text(
+                              'Read more',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 16.0,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 }
