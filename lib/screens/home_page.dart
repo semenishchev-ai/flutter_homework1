@@ -47,8 +47,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                     shadowColor: Theme.of(context).shadowColor,
                     floating: true,
                     flexibleSpace: FlexibleSpaceBar(
-                      title: Text(AppLocalizations.of(context)!.name),
-                      centerTitle: true,
+                      title: Text(
+                        AppLocalizations.of(context)!.name,
+                        style: const TextStyle(
+                          color: Colors.black, // Specify the desired text color
+                        ),
+                      ),
                     ),
                     actions: [
                       IconButton(

@@ -16,11 +16,17 @@ This Flutter News App is a mobile application that allows users to read news art
 - Separate screen with liked news
 - Riverpod for DI and state management
 - Some simple tests
+------
+*Version 3*
+- Article page opening animation
+- Like toggling animation
+- SliverHeader and floating SliverAppBar
+- News searching by title
 
 ## Screenshots
 
 - <img src="/screenshots/screenshot_1.jpg" alt="Screenshot 1" width="30%">  
-- More screenshots can be found in /screenshots (version 2 screenshots have "v2" tag)
+- More screenshots can be found in /screenshots (version 2 screenshots have "v2" tag, version 3 - "v3")
 
 ## APK
 
